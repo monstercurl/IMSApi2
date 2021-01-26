@@ -6,5 +6,6 @@ namespace IMSApi.EntityModel
 {
     class Product
     {
+        string ProductName;
     }
 }
