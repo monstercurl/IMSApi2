@@ -1,8 +1,9 @@
-﻿using IMSApi.EntityModel;
+﻿using IMSApi.EntityModel.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace IMSApi.DAL
 {
@@ -13,5 +14,7 @@ namespace IMSApi.DAL
 
         }
         public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<Account> Account { get; set; }
+        public DbSet<Role> Role { get; set; }
     }
 }

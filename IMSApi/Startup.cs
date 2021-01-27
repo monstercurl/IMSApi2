@@ -1,4 +1,7 @@
 using IMSApi.DAL;
+using IMSApi.DAL.Common;
+using IMSApi.DAL.Repo;
+using IMSApi.EntityModel.IRepo;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,9 +15,8 @@ using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+
 
 namespace IMSApi
 {
@@ -34,8 +36,12 @@ namespace IMSApi
                  .UseMySql(Configuration.GetConnectionString("IMSContext"),
                      mysqlOptions =>
                          mysqlOptions.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb))));
-
+            services.AddTokenAuthentication(Configuration);
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.AddScoped(typeof(IAccountService), typeof(AccountService));
+            services.AddScoped<IEmailService, EmailService>();
             services.AddControllers();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IMSApi", Version = "v1" });
@@ -55,7 +61,7 @@ namespace IMSApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
