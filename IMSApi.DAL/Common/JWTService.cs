@@ -1,4 +1,5 @@
 ﻿using IMSApi.EntityModel.DTO.Accounts;
+using IMSApi.EntityModel.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -22,7 +23,7 @@ namespace IMSApi.DAL.Common
             _expDate = config.GetSection("JwtConfig").GetSection("expirationInMinutes").Value;
         }
 
-        public string GenerateSecurityToken(AccountResponse user)
+        public string GenerateSecurityToken(Account user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secret);
@@ -32,7 +33,7 @@ namespace IMSApi.DAL.Common
                 {
                     
                     new Claim(ClaimTypes.Name,  user.UserName),
-                    new Claim(ClaimTypes.Role,  user.Role),
+                    new Claim(ClaimTypes.Role,  user.Role._role),
 
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(double.Parse(_expDate)),

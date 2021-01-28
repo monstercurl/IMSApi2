@@ -4,18 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IMSApi.DAL.Migrations
 {
-    public partial class InitialCreateq : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Vendors",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "longtext CHARACTER SET utf8mb4",
-                oldNullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
@@ -39,10 +31,16 @@ namespace IMSApi.DAL.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
                     PasswordInHash = table.Column<string>(nullable: true),
                     profile_pic_url = table.Column<string>(nullable: true),
                     RoleId = table.Column<int>(nullable: true),
+                    EmailVerificationToken = table.Column<string>(nullable: true),
+                    PasswordResetToken = table.Column<string>(nullable: true),
+                    PasswordResetTokenExpiry = table.Column<DateTime>(nullable: false),
+                    VerifiedOn = table.Column<DateTime>(nullable: false),
                     IsVerified = table.Column<bool>(nullable: false),
+                    IsDeactivated = table.Column<bool>(nullable: false),
                     RegisteredOn = table.Column<DateTime>(nullable: false),
                     UpdatedOn = table.Column<DateTime>(nullable: true)
                 },
@@ -70,13 +68,6 @@ namespace IMSApi.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Role");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Vendors",
-                type: "longtext CHARACTER SET utf8mb4",
-                nullable: true,
-                oldClrType: typeof(string));
         }
     }
 }

@@ -26,8 +26,14 @@ namespace IMSApi.DAL.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("EmailVerificationToken")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("IsDeactivated")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("tinyint(1)");
@@ -36,6 +42,15 @@ namespace IMSApi.DAL.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("PasswordInHash")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("PasswordResetTokenExpiry")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Phone")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("RegisteredOn")
@@ -49,6 +64,9 @@ namespace IMSApi.DAL.Migrations
 
                     b.Property<string>("UserName")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("VerifiedOn")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("profile_pic_url")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -72,27 +90,6 @@ namespace IMSApi.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("IMSApi.EntityModel.Entities.Vendor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Brand")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Vendors");
                 });
 
             modelBuilder.Entity("IMSApi.EntityModel.Entities.Account", b =>

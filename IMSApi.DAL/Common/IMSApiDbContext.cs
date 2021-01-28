@@ -13,7 +13,7 @@ namespace IMSApi.DAL
         {
 
         }
-        public DbSet<Vendor> Vendors { get; set; }
+       
         public DbSet<Account> Account { get; set; }
         public DbSet<Role> Role { get; set; }
     }

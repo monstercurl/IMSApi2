@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 using System;
-using AutoMapper;
+
 
 
 namespace IMSApi
@@ -55,7 +55,7 @@ namespace IMSApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IMSApi v1"));
+               app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IMSApi v1"));
             }
 
             app.UseHttpsRedirection();

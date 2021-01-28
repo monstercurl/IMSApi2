@@ -11,6 +11,7 @@ using WebApi.Models.Accounts;
 
 namespace IMSApi.Controllers
 {   
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -39,15 +40,16 @@ namespace IMSApi.Controllers
         public IActionResult Register(RegisterRequest model)
         {
 
-            _accountService.Register(model, Request.Headers["origin"]);
-            return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+            return Ok(new { message = _accountService.Register(model, Request.Headers["origin"]) });
+
         }
+
         [AllowAnonymous]
-        [HttpPost("verify-email")]
+        [HttpPost("verifyemail")]
         public IActionResult VerifyEmail(VerifyEmailRequest model)
         {
-            _accountService.VerifyEmail(model.Token);
-            return Ok(new { message = "Verification successful, you can now login" });
+           
+            return Ok(new { message =  _accountService.VerifyEmail(model.Email,model.Token) });
         }
 
 
@@ -59,12 +61,6 @@ namespace IMSApi.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = "admin")]
-        [Route("/api")]
-        [HttpGet]
-        public IActionResult Register(int Id)
-        {
-            return Ok("Working For End Customer");
-        }
+        
     }
 }

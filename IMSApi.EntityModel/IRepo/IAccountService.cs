@@ -12,8 +12,8 @@ namespace IMSApi.EntityModel.IRepo
     {
         public AuthenticateResponse Authenticate(AuthenticateRequest authDto);
         public AccountResponse GetById(int id);
-       public IEnumerable<AccountResponse> GetAll();
+       
         public string Register(RegisterRequest registerRequest,string origin);
-        void VerifyEmail(string token);
+        string VerifyEmail(string email,string token);
     }
 }
