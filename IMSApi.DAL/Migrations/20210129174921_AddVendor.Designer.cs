@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMSApi.DAL.Migrations
 {
     [DbContext(typeof(IMSApiDbContext))]
-    [Migration("20210128090245_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20210129174921_AddVendor")]
+    partial class AddVendor
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,6 +92,23 @@ namespace IMSApi.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("IMSApi.EntityModel.Entities.vendor", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Vendor");
                 });
 
             modelBuilder.Entity("IMSApi.EntityModel.Entities.Account", b =>

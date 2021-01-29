@@ -40,6 +40,7 @@ namespace IMSApi
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped(typeof(IAccountService), typeof(AccountService));
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddControllers();
             
             services.AddSwaggerGen(c =>

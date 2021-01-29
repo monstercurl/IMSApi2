@@ -16,5 +16,10 @@ namespace IMSApi.DAL
        
         public DbSet<Account> Account { get; set; }
         public DbSet<Role> Role { get; set; }
+        public DbSet<Product> product { get; set; }
+
+        public DbSet<vendor> Vendor { get; set; }
+
+
     }
 }
