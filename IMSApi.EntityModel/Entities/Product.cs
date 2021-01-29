@@ -11,6 +11,6 @@ namespace IMSApi.EntityModel.Entities
        public int id { get; set; }
         public string  Name { get; set; }
 
-        public string color { get; set; }
+        public string coulor { get; set; }
     }
 }
