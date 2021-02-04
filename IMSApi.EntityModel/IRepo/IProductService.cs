@@ -13,7 +13,7 @@ namespace IMSApi.EntityModel.IRepo
 {
     public interface IProductService
     {
-        public string AddProduct(ProdcutRequest prdReq, IWebHostEnvironment webHostingEnv,List<ProdcutDesignDTO> designDto);
+        public string AddProduct(ProdcutRequest prdReq1, IWebHostEnvironment webHostingEnv,List<ProdcutDesignDTO> designDto);
         public AddProductReponse ExistingData();
         public List<ProductResponse> GeAllProducts(HttpRequest req);
         public string DeleteProduct(long ProductId);
