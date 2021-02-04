@@ -20,7 +20,7 @@ namespace IMSApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>().UseUrls("http://*:8080");
+                    webBuilder.UseStartup<Startup>().UseUrls("http://103.150.187.59:54691");
                 });
     }
 }

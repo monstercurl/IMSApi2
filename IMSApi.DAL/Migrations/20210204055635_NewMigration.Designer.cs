@@ -3,14 +3,16 @@ using System;
 using IMSApi.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IMSApi.DAL.Migrations
 {
     [DbContext(typeof(IMSApiDbContext))]
-    partial class IMSApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210204055635_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

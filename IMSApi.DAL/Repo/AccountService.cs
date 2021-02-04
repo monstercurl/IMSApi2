@@ -42,7 +42,7 @@ namespace IMSApi.DAL.Repo
          
             using (_context)
             {
-                var blogs = _context.Account
+                var accounts = _context.Account
                     .Include(acc => acc.Role)
                     .ToList();
             }

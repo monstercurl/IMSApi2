@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IMSApi.EntityModel.Entities
 {
-    public class vendor
+    public class Vendor
     {
         public int id { get; set; }
         public string Name { get; set; }
