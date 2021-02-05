@@ -79,7 +79,7 @@ namespace IMSApi.DAL.Repo
             prd.Description = prdReq.Description;
             prd.Cost_Price = prdReq.Cost_Price;
             prd.Selling_price = prdReq.Selling_price;
-            prd.Vendor = _context.Vendor.FirstOrDefault(x => x.id == prdReq.VendorId);
+            prd.Vendor = _context.Vendor.FirstOrDefault(x => x.Id == prdReq.VendorId);
             prd.AddDate = DateTime.UtcNow;
             prd.UpdateDate = null;
 

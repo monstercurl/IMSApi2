@@ -42,6 +42,7 @@ namespace IMSApi
             services.AddScoped(typeof(IAccountService), typeof(AccountService));
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped(typeof(IVendoRepo), typeof(VendorRepo));
 
             services.AddControllers();
 
