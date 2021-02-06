@@ -89,7 +89,7 @@ namespace IMSApi
                 {
 
                     FileProvider = new PhysicalFileProvider(
-                     Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images")),
+                     Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/images")),
                     RequestPath = new PathString("/images")
                 });
             }
@@ -106,7 +106,7 @@ namespace IMSApi
                 app.UseDirectoryBrowser(new DirectoryBrowserOptions()
             {
                 FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images")),
+            Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/images")),
                 RequestPath = new PathString("/images")
             });
         }
