@@ -187,10 +187,15 @@ namespace IMSApi.DAL.Repo
             var catList = _context.categories.ToList();
             var colList = _context.productColor.ToList();
             var sizeList = _context.productSize.ToList();
+            var fabricList = _context.productfabric.ToList();
+            var stichingList = _context.productstichingtype.ToList();
 
             addProductResponse.ListOfCategories = catList;
             addProductResponse.ProductColor = colList;
             addProductResponse.ProductSizes = sizeList;
+            addProductResponse.ProdctFabrics = fabricList;
+            addProductResponse.ProductStichingTypes = stichingList;
+
 
             return addProductResponse;
 

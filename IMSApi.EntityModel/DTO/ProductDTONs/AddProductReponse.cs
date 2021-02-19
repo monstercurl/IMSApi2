@@ -13,6 +13,9 @@ namespace IMSApi.EntityModel.DTO.ProductDTONs
         public IEnumerable<ProductColor> ProductColor { get; set; }
         public IEnumerable<Categories> ListOfCategories { get; set; }
         public IEnumerable<ProductSize> ProductSizes { get; set; }
+        public IEnumerable<ProductFabric> ProdctFabrics { get; set; }
+        public IEnumerable<ProductStichingType> ProductStichingTypes { get; set; }
+        
 
 
     }
@@ -35,6 +38,17 @@ namespace IMSApi.EntityModel.DTO.ProductDTONs
         public string Value { get; set; }
 
     }
+    public class ProductFebricDTO
+    {
 
+        public string Value { get; set; }
+
+    }
+    public class ProductStiching
+    {
+
+        public string Value { get; set; }
+
+    }
 
 }
