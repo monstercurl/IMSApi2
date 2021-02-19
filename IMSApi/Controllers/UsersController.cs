@@ -53,7 +53,7 @@ namespace IMSApi.Controllers
         }
 
 
-        [Authorize(Roles = "end")]
+        [Authorize(Roles = UserRoles.endUser)]
         [HttpGet("{id}")]
         public IActionResult GetById(int Id)
         {

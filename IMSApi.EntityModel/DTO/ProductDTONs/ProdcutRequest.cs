@@ -17,28 +17,46 @@ namespace IMSApi.EntityModel.DTO.ProductDTONs
     {
        
         public int Category_Id{ get; set; }
-        public string Name { get; set; }
+        public int StichingTypeId { get; set; }
+        public int Fabric_Id { get; set; }
+
         public string Description { get; set; }
 
-
-        [AllowedExtensions(new string[] { ".jpg", ".png" })]
-        public List<IFormFile> Image {get; set;}
-        public int Cost_Price { get; set; }
-         public int Selling_price { get; set; }
+        
+        
         public int VendorId { get; set; }
+        public int CustomerShippingCost { get; set; }
+        public int VendorShippingCost { get; set; }
+        public int TraderMarginRupees { get; set; }
+        public int TraderPrice { get; set; }
+        public int CustomerMarginRupees { get; set; }
+        public int CustomerPrice { get; set; }
+        public int Cost_Price { get; set; }
+
     }
     public class ProdcutDesignDTO
     {
+       public long ProductId { get; set; }
         [Required]
         public int colorID { get; set; }
 
-         public int SizeID { get; set; }
-        [Required]
-         public int Qty { get; set; }
+        public string ProductSizeAndQuantityJson  { get; set; } 
+
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
+        public List<IFormFile> ImagesWithDesign{ get; set; }
+
+
 
     }
-    
-    public class AllowedExtensionsAttribute : ValidationAttribute
+    public class ProductSizeAndQuantityJson
+    {
+
+        public int SizeID { get; set; }
+        [Required]
+        public int Qty { get; set; }
+    }
+
+        public class AllowedExtensionsAttribute : ValidationAttribute
     {
         private readonly string[] _extensions;
         public AllowedExtensionsAttribute(string[] extensions)

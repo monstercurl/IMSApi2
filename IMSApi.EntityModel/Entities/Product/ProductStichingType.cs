@@ -6,16 +6,9 @@ using System.Threading.Tasks;
 
 namespace IMSApi.EntityModel.Entities.Product
 {
-   public class ProductImages
+    public class ProductStichingType
     {
         public int id { get; set; }
-
-        public string folderName { get; set; }
-       
-        public string Physicalurl { get; set; }
-        
-        public string cdn_public_url { get; set; }
-
-        
+        public string stiching_value { get; set; }
     }
 }

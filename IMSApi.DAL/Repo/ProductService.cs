@@ -1,4 +1,5 @@
 ﻿using IMSApi.DAL.Common;
+using IMSApi.EntityModel.DTO.Common;
 using IMSApi.EntityModel.DTO.ProductDTONs;
 using IMSApi.EntityModel.Entities.Product;
 using IMSApi.EntityModel.IRepo;
@@ -20,7 +21,7 @@ namespace IMSApi.DAL.Repo
     {
         IMSApiDbContext _context;
         private readonly AppSettings _appSettings;
-        public ProductService(IMSApiDbContext context, IOptions<AppSettings> appSettings) 
+        public ProductService(IMSApiDbContext context, IOptions<AppSettings> appSettings)
         {
 
             _context = context;
@@ -31,9 +32,9 @@ namespace IMSApi.DAL.Repo
         public string AddCategory(CategoryDTO catDTO)
         {
             Categories cat = new Categories();
-            cat.Category_Value = catDTO.Category_Value;
-            cat.Parent_Category = catDTO.Parent_Category;
-            _context.Categories.Add(cat);
+            cat.category_value = catDTO.Category_Value;
+
+            _context.categories.Add(cat);
             _context.SaveChanges();
             return "Category Added Succesfully";
         }
@@ -42,53 +43,106 @@ namespace IMSApi.DAL.Repo
         {
             ProductColor col = new ProductColor();
             col.ProductColorValue = productColorDTO.ColorValue;
-            
+
             _context.productColor.Add(col);
             _context.SaveChanges();
 
             return "Color Added Succesfully";
         }
-
-        public string AddProduct(ProdcutRequest prdReq, IWebHostEnvironment webHostEnv,List<ProdcutDesignDTO> productDesignLists)
+        public string AddProductHeader(ProdcutRequest prdReq)
         {
             Product prd = new Product();
-            prd.Name = prdReq.Name;
-            prd.Category = _context.Categories.FirstOrDefault(x => x.Id == prdReq.Category_Id);
-            List<ProductDesign> ListOfPrductDesign = new List<ProductDesign>();
-            foreach( ProdcutDesignDTO productDesignDTO in productDesignLists)
-             {
-                ListOfPrductDesign.Add(
-                    new ProductDesign()
-                    {
-                        product = prd,
-                        productColor = _context.productColor.FirstOrDefault(x => x.ProductColor_ID == productDesignDTO.colorID),
-                        productSize = _context.productSize.FirstOrDefault(x => x.Id == productDesignDTO.SizeID),
-                        Quantity = productDesignDTO.Qty
-
-                    }
-                    );
-            }
-            prd.productDesign = ListOfPrductDesign;
-            List<ProductImages> ImageUrls = new List<ProductImages>();
-            string folderforImage = "prd_" + DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
-            foreach (string _imgUrl in UploadImage(prdReq.Image, webHostEnv,folderforImage))
-            {
-                ImageUrls.Add(new ProductImages() { Physicalurl = _imgUrl,product=prd,folderName = folderforImage });
-            }
-            prd.Image_Urls = ImageUrls;
+            prd.Category = _context.categories.FirstOrDefault(x => x.id == prdReq.Category_Id);
+            prd.Fabric = _context.productfabric.FirstOrDefault(x => x.Id == prdReq.Fabric_Id);
+            prd.StichingType = _context.productstichingtype.FirstOrDefault(x => x.id == prdReq.StichingTypeId);
             prd.Description = prdReq.Description;
             prd.Cost_Price = prdReq.Cost_Price;
-            prd.Selling_price = prdReq.Selling_price;
-            prd.Vendor = _context.Vendor.FirstOrDefault(x => x.Id == prdReq.VendorId);
+           
+            prd.Vendor = _context.vendor.FirstOrDefault(x => x.Id == prdReq.VendorId);
             prd.AddDate = DateTime.UtcNow;
+            prd.AddTime = DateTime.UtcNow.TimeOfDay;
+            prd.UpdateTime = null;
             prd.UpdateDate = null;
-
+            string folderForProductRelatedImages = "prd_" + DateTime.Now.ToString("yyyyddMHHmmss");
+            prd.ProductImageDir = folderForProductRelatedImages;
+            prd.IsActive = false;
+            prd.TraderMarginRupees = prdReq.TraderMarginRupees;
+            prd.VendorShippingCost = prdReq.VendorShippingCost;
+            prd.TraderPrice = prdReq.TraderPrice;
+            prd.CustomerShippingCost = prdReq.CustomerShippingCost;
+            prd.CustomerMarginRupees = prdReq.CustomerMarginRupees;
+            prd.CustomerPrice = prdReq.CustomerPrice;
+            
             _context.product.Add(prd);
             _context.SaveChanges();
 
             return "Added Successfully";
+        }
+
+        public string AddProductDesign
+            (
+            ProdcutDesignDTO PrdDesign,
+            IWebHostEnvironment webHostEnv,
+            List<ProductSizeAndQuantityJson> productquantityList
+            )
+        {
+
+            using (_context)
+            {
+                Product product = new Product();
+                product = _context.product.Where(e => e.Product_ID == PrdDesign.ProductId).Include(e => e.productDesign).ThenInclude(e => e.product_design_images)
+                         .Include(e => e.product_images).First();
+
+
+
+
+
+                ICollection<ProductImages> productImages = new List<ProductImages>();
+                foreach (string _imgUrl in UploadImage(PrdDesign.ImagesWithDesign, webHostEnv, product.ProductImageDir))
+                {
+                    ProductImages prdI = new ProductImages() { Physicalurl = _imgUrl, folderName = product.ProductImageDir };
+                    productImages.Add(prdI);
+                   product.product_images.Add(prdI);
+                    
+
+                }
+
+
+
+
+                ICollection<ProductDesign> prddee = new List<ProductDesign>();
+                prddee = product.productDesign;
+                foreach (ProductSizeAndQuantityJson psq in productquantityList)
+                {
+                   
+                   ProductDesign prdes = new ProductDesign();
+                   prdes.productColor = _context.productColor.FirstOrDefault(x => x.ProductColor_ID == PrdDesign.colorID);
+                    prdes.productSize = _context.productSize.FirstOrDefault(x => x.Id == psq.SizeID);
+                    prdes.Quantity = psq.Qty;
+                    
+                     prdes.product_design_images =( from pop in productImages select new Product_Design_Images() { ProductImage = pop }).ToList();
+                    
+                    prddee.Add(prdes);
+
+
+                }
+                
+                
+
+
+                product.productDesign = prddee;
+                
+                _context.SaveChanges();
+                // product.product_design_images = ImageUrlsDesigns;
+
+            }
+
+            return "Added Successfully";
+
 
         }
+
+        
 
         public string AddSize(ProductSizeDTO productSizeDTO)
         {
@@ -102,26 +156,27 @@ namespace IMSApi.DAL.Repo
 
         public string DeleteProduct(long ProductId)
         {//Can Not be deleted
-            //Product product = null;
-            //using (_context)
-            //{
-               
-            //    product = _context.product.Where(e => e.Product_ID == ProductId).Include(e => e.productDesign)
-            //        .Include(e => e.Image_Urls).First();
-            //    foreach (ProductImages pri in product.Image_Urls)
-            //    {
-            //        product.Image_Urls.Remove(pri);
-            //    }
-            //    foreach (ProductDesign pri in product.productDesign)
-            //    {
-            //        product.productDesign.Remove(pri);
-            //    }
-            //    _context.product.Remove(product);
-            //    _context.SaveChanges();
-            //}
-          
-        
-            return "Can Not  delete Sorry";
+            Product product = null;
+            using (_context)
+            {
+
+                product = _context.product.Where(e => e.Product_ID == ProductId).Include(e => e.productDesign)
+                    .Include(e => e.product_images).First();
+                //foreach (ProductImages pri in product.Image_Urls)
+                //{
+                //    product.Image_Urls.Remove(pri);
+                //}
+                //foreach (ProductDesign pri in product.productDesign)
+                //{
+                //    product.productDesign.Remove(pri);
+                //}
+                _context.product.Remove(product);
+                _context.SaveChanges();
+
+            }
+
+
+            return "Can Not  delete ";
         }
 
       
@@ -129,7 +184,7 @@ namespace IMSApi.DAL.Repo
         public AddProductReponse ExistingData()
         {
              AddProductReponse addProductResponse = new AddProductReponse();
-            var catList = _context.Categories.ToList();
+            var catList = _context.categories.ToList();
             var colList = _context.productColor.ToList();
             var sizeList = _context.productSize.ToList();
 
@@ -141,14 +196,23 @@ namespace IMSApi.DAL.Repo
 
         }
 
-        public List<ProductResponse> GeAllProducts(HttpRequest req)
+        public (List<ProductResponse>,PagedList<Product>) GeAllProducts(HttpRequest req,ProductPagingParameters productPagingParameters)
         {
-            var listOfProducts = _context.product.ToList();
+            //    var listOfProducts = _context.product
+            //        .Skip((productPagingParameters.PageNumber - 1) * productPagingParameters.PageSize)
+            //.Take(productPagingParameters.PageSize)
+
+            //  .ToList();
+            var listOfProducts = PagedList<Product>.ToPagedList(_context.product, productPagingParameters.PageNumber, productPagingParameters.PageSize);
+
+
             using (_context)
             {
                  _context.product.Include(acc => acc.Category).ToList();
-                _context.product.Include(acc => acc.productDesign).ToList();
-                _context.product.Include(acc => acc.Image_Urls).ToList();
+                _context.product.Include(acc => acc.productDesign).ThenInclude(acc => acc.product_design_images).ThenInclude(acc => acc.ProductImage).ToList();
+                _context.product.Include(acc => acc.product_images).ToList();
+                _context.product.Include(acc => acc.product_images).ToList();
+                
 
             }
             List<ProductResponse> ListOfProductResponse = new List<ProductResponse>();
@@ -158,17 +222,18 @@ namespace IMSApi.DAL.Repo
             }
 
             
-            return ListOfProductResponse;
+            return (ListOfProductResponse,listOfProducts);
+
 
         }
 
         public List<ProductDesign> GetDesignsForGivenProduct(int Id)
         {
-           var listOfDesign = (from s in _context.productDesign
-                              where s.product.Product_ID == Id
-                              select s).ToList();
+          // var listOfDesign = (from s in _context.productDesign
+          //                    where s.Product_Id == Id
+           //                   select s).ToList();
 
-            return listOfDesign;
+            return null;
         }
 
         public string UpdateProduct(ProdcutRequest prdReq)
@@ -212,6 +277,88 @@ namespace IMSApi.DAL.Repo
                 }
             }
             return ImageUrl;
+        }
+
+        public CostCalculateResponse CostWithTax(CostCalculateRequest costCalculateRequest)
+        {
+            CostCalculateResponse costCalculateResponse = new CostCalculateResponse();
+            int tempCustCost = costCalculateRequest.costprice + costCalculateRequest.VendorShippingCost + costCalculateRequest.CustomerShippingCost + costCalculateRequest.CustomerMarginRupees;
+            int tempTraderCost = costCalculateRequest.costprice + costCalculateRequest.VendorShippingCost + costCalculateRequest.CustomerShippingCost + costCalculateRequest.VendorShippingCost;
+            int taxpercent = 0;
+            int taxpercentTrader = 0;
+            if (_context.prd_tax_percentage.Where(e => ((e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST))).FirstOrDefault() != null)
+            {
+                if ((costCalculateRequest.costprice + costCalculateRequest.CustomerMarginRupees) > 1000)
+                {
+                    taxpercent = _context.prd_tax_percentage.Where(e => ((e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST_OverMargin))).FirstOrDefault().taxpercentage;
+
+                }
+                else
+                {
+
+                    taxpercent = _context.prd_tax_percentage.Where(e => (e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST)).FirstOrDefault().taxpercentage;
+                }
+                if ((costCalculateRequest.costprice + costCalculateRequest.TraderMarginRupees) > 1000)
+                {
+                    taxpercentTrader = _context.prd_tax_percentage.Where(e => ((e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST_OverMargin))).FirstOrDefault().taxpercentage;
+
+                }
+                else
+                {
+
+                    taxpercentTrader = _context.prd_tax_percentage.Where(e => (e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST)).FirstOrDefault().taxpercentage;
+                }
+            }
+            else
+            {
+                taxpercent = _context.prd_tax_percentage.Where(e => (e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST)).FirstOrDefault().taxpercentage;
+                taxpercentTrader = taxpercent;
+            }
+            
+            costCalculateResponse.CustomerPrice = tempCustCost + (tempCustCost * taxpercent) / 100;
+            costCalculateResponse.TraderPrice = tempTraderCost + (tempTraderCost * taxpercentTrader) / 100;
+            return costCalculateResponse;
+
+
+
+
+
+        }
+
+        public string ActivateProduct(int Id)
+        {
+           var p = _context.product.Where(x => x.Product_ID == Id).FirstOrDefault();
+            if (p != null)
+            {
+                p.IsActive = true;
+
+                _context.SaveChanges();
+                return "Success";
+
+            }
+            else {
+                return "No Product is there with given ID";
+            }
+            
+           
+           
+        }
+
+        public string DeactivateProduct(int Id)
+        {
+           var p= _context.product.Where(x => x.Product_ID == Id).FirstOrDefault();
+            if (p != null)
+            {
+                p.IsActive = false;
+                _context.SaveChanges();
+                return "Success";
+            }
+            else
+            {
+                return "No Product is there with given ID";
+            }
+            
+            
         }
     }
 }

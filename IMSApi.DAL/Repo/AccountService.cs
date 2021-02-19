@@ -36,13 +36,13 @@ namespace IMSApi.DAL.Repo
 
         public AuthenticateResponse Authenticate(AuthenticateRequest authDto)
         {
-            var _users = _context.Account.ToList();
+            var _users = _context.account.ToList();
             var user = _users.SingleOrDefault(x => x.UserName == authDto.UserName && BC.Verify(authDto.Password,x.PasswordInHash) );
             if (user == null) return null;
          
             using (_context)
             {
-                var accounts = _context.Account
+                var accounts = _context.account
                     .Include(acc => acc.Role)
                     .ToList();
             }
@@ -54,17 +54,17 @@ namespace IMSApi.DAL.Repo
 
         public AccountResponse GetById(int id)
         {
-            var user = _context.Account.SingleOrDefault(x => x.Id ==  id);
+            var user = _context.account.SingleOrDefault(x => x.Id ==  id);
             return new AccountResponse(user);
         }
 
          string IAccountService.Register(RegisterRequest registerRequest, string origin)
         {
-            if (_context.Account.Any(x => x.Email == registerRequest.Email))
+            if (_context.account.Any(x => x.Email == registerRequest.Email))
             {
                 return "Email is Already Registered";
             }
-            if (_context.Account.Any(x => x.UserName == registerRequest.UserName))
+            if (_context.account.Any(x => x.UserName == registerRequest.UserName))
             {
                 return "User Name is Already Registered";
             }
@@ -77,7 +77,7 @@ namespace IMSApi.DAL.Repo
                 IsVerified = false,
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
-                Role = _context.Role.FirstOrDefault(x => x._role == UserRoles.endUser),
+                Role = _context.role.FirstOrDefault(x => x._role == UserRoles.endUser),
                 EmailVerificationToken = randomTokenString(),
                 PasswordInHash = BC.HashPassword(registerRequest.Password),
                RegisteredOn = DateTime.UtcNow
@@ -88,7 +88,7 @@ namespace IMSApi.DAL.Repo
 
        
             
-            _context.Account.Add(account);
+            _context.account.Add(account);
             _context.SaveChanges();
 
            
@@ -108,7 +108,7 @@ namespace IMSApi.DAL.Repo
 
        public  string VerifyEmail(string Email,string token)
         {
-            var account = _context.Account.SingleOrDefault(x => x.Email== Email);
+            var account = _context.account.SingleOrDefault(x => x.Email== Email);
             
 
             if (account == null || account.EmailVerificationToken != token) return "Email Verification Failed" ;
@@ -117,7 +117,7 @@ namespace IMSApi.DAL.Repo
             account.VerifiedOn = DateTime.UtcNow;
             account.EmailVerificationToken = null;
 
-            _context.Account.Update(account);
+            _context.account.Update(account);
             _context.SaveChanges();
             _emailService.Send(
                to: Email,

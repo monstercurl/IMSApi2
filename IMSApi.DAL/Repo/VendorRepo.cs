@@ -22,17 +22,17 @@ namespace IMSApi.DAL.Repo
         public string AddVendor(Vendor vnd)
         {
           
-            _context.Vendor.Add(vnd);
+            _context.vendor.Add(vnd);
             _context.SaveChanges();
             return "added";
         }
 
         public string Delete(int id)
         {
-            var data = _context.Vendor.Where(m => m.Id == id).FirstOrDefault();
+            var data = _context.vendor.Where(m => m.Id == id).FirstOrDefault();
             if (data != null)
             {
-                _context.Vendor.Remove(data);
+                _context.vendor.Remove(data);
                 _context.SaveChanges();
                 return "deleted";
             }
@@ -43,7 +43,7 @@ namespace IMSApi.DAL.Repo
 
         public Vendor GetVendorById(int Id)
         {
-            var res = _context.Vendor.Where(m => m.Id == Id).FirstOrDefault();
+            var res = _context.vendor.Where(m => m.Id == Id).FirstOrDefault();
             return res;
         }
 
@@ -51,7 +51,7 @@ namespace IMSApi.DAL.Repo
         public string Update(int id, VendorModel vnd)
         {
 
-            var data = _context.Vendor.FirstOrDefault(x => x.Id == id);
+            var data = _context.vendor.FirstOrDefault(x => x.Id == id);
 
             // Checking if any such record exist  
             if (data != null)

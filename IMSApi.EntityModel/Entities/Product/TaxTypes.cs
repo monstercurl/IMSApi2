@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace IMSApi.EntityModel.Entities.Product
 {
-    public class Categories
+    public class TaxTypes
     {
-        public int id { get; set; }
-        public string category_value { get; set; }
-        
-       
-
-       
+        public const string GST = "GST";
+        public const string GST_OverMargin = "GST_OverMargin";
     }
 }

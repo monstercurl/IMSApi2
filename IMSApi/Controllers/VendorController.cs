@@ -25,7 +25,7 @@ namespace IMSApi.Controllers
         [HttpGet("List")]
         public ActionResult getlist()
         {
-            var res = _vendor.Vendor.ToList();
+            var res = _vendor.vendor.ToList();
             return Ok(res);
         }
         [HttpPost("Add")]

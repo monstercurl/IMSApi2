@@ -14,8 +14,13 @@ namespace IMSApi.EntityModel.Entities.Product
         public ProductColor productColor { get; set; }
         public ProductSize productSize { get; set; }
 
-        public Product product { get; set; }
+        //public ICollection<ProductImages> ImagesAsPerDesign { get; set; }
+
+       public ICollection<Product_Design_Images> product_design_images { get; set; }
+        public string DesignImageDir { get; set; }
+
         public int Quantity { get; set; }
+
     }
 
 }

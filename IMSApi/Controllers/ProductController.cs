@@ -1,5 +1,7 @@
 ﻿using IMSApi.DAL;
+using IMSApi.DAL.Common;
 using IMSApi.EntityModel.DTO.ProductDTONs;
+using IMSApi.EntityModel.Entities.Product;
 using IMSApi.EntityModel.IRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -24,15 +26,24 @@ namespace IMSApi.Controllers
             _context = con;
         }
         [AllowAnonymous]
-        [HttpPost("AddProductWithImage")]
-        public IActionResult AddProductWithImage([FromForm]ProdcutRequest prdReq, [FromForm] string productDesignList)
+        [HttpPost("AddProductHeader")]
+        public IActionResult AddProductHeader(ProdcutRequest prdReq)
         {
-            List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            return Ok(_prd.AddProduct(prdReq, _webHostEnvironment,prdList));
+            //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
+            return Ok(_prd.AddProductHeader(prdReq));
             
 
         }
-        
+        [AllowAnonymous]
+        [HttpPost("AddProductDesignWithImages")]
+        public IActionResult AddProductDesigns([FromForm] ProdcutDesignDTO prdDesgn)
+        {
+            List<ProductSizeAndQuantityJson> qtlist = JsonConvert.DeserializeObject<List<ProductSizeAndQuantityJson>>(prdDesgn.ProductSizeAndQuantityJson);
+            return Ok(_prd.AddProductDesign(prdDesgn, _webHostEnvironment, qtlist));
+
+
+        }
+
         [AllowAnonymous]
         [HttpPost("AddCategory")]
         public IActionResult AddCategory(CategoryDTO prdReq)
@@ -63,9 +74,22 @@ namespace IMSApi.Controllers
         }
         [AllowAnonymous]
         [HttpGet("getAllProducts")]
-        public IActionResult GetAllProducts()
+        public IActionResult GetAllProducts([FromQuery]ProductPagingParameters productPagingParameters)
         {
-            return Ok(_prd.GeAllProducts(Request));
+            var prodcutFromRepo = _prd.GeAllProducts(Request, productPagingParameters);
+            var prodcutRes = prodcutFromRepo.Item1;
+            var prodcuts = prodcutFromRepo.Item2;
+            var metadata = new
+            {
+                prodcuts.TotalCount,
+                prodcuts.PageSize,
+                prodcuts.CurrentPage,
+                prodcuts.TotalPages,
+                prodcuts.HasNext,
+                prodcuts.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(prodcutRes);
 
         }
 
@@ -81,6 +105,27 @@ namespace IMSApi.Controllers
         public IActionResult DeleteProduct(int Product_Id)
         {
             return Ok(_prd.DeleteProduct(Product_Id));
+
+        }
+        [AllowAnonymous]
+        [HttpPost("CalculateSellingCost")]
+        public IActionResult CalculateSellingCost(CostCalculateRequest costCalculateRequest)
+        {
+            return Ok(_prd.CostWithTax(costCalculateRequest));
+
+        }
+        [AllowAnonymous]
+        [HttpPost("ActivateProduct")]
+        public IActionResult ActivateProduct(int Id)
+        {
+            return Ok(_prd.ActivateProduct(Id));
+
+        }
+        [AllowAnonymous]
+        [HttpPost("DactivateProduct")]
+        public IActionResult DactivateProduct(int Id)
+        {
+            return Ok(_prd.DeactivateProduct(Id));
 
         }
 
