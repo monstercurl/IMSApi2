@@ -49,7 +49,7 @@ namespace IMSApi.DAL.Repo
 
             return "Color Added Succesfully";
         }
-        public string AddProductHeader(ProdcutRequest prdReq)
+        public long AddProductHeader(ProdcutRequest prdReq)
         {
             Product prd = new Product();
             prd.Category = _context.categories.FirstOrDefault(x => x.id == prdReq.Category_Id);
@@ -76,7 +76,7 @@ namespace IMSApi.DAL.Repo
             _context.product.Add(prd);
             _context.SaveChanges();
 
-            return "Added Successfully";
+            return prd.Product_ID;
         }
 
         public string AddProductDesign
@@ -288,7 +288,7 @@ namespace IMSApi.DAL.Repo
         {
             CostCalculateResponse costCalculateResponse = new CostCalculateResponse();
             int tempCustCost = costCalculateRequest.costprice + costCalculateRequest.VendorShippingCost + costCalculateRequest.CustomerShippingCost + costCalculateRequest.CustomerMarginRupees;
-            int tempTraderCost = costCalculateRequest.costprice + costCalculateRequest.VendorShippingCost + costCalculateRequest.CustomerShippingCost + costCalculateRequest.VendorShippingCost;
+            int tempTraderCost = costCalculateRequest.costprice + costCalculateRequest.VendorShippingCost + costCalculateRequest.CustomerShippingCost + costCalculateRequest.TraderMarginRupees;
             int taxpercent = 0;
             int taxpercentTrader = 0;
             if (_context.prd_tax_percentage.Where(e => ((e.productstichingtypeId == costCalculateRequest.prdStichingType) && (e.taxtype == TaxTypes.GST))).FirstOrDefault() != null)

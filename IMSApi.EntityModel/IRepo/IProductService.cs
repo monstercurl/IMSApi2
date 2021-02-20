@@ -15,7 +15,7 @@ namespace IMSApi.EntityModel.IRepo
 {
     public interface IProductService
     {
-        public string AddProductHeader(ProdcutRequest prdReq);
+        public long AddProductHeader(ProdcutRequest prdReq);
         public string AddProductDesign(ProdcutDesignDTO prdDesign, IWebHostEnvironment webHostingEnv, List<ProductSizeAndQuantityJson> sizeQnt);
         public AddProductReponse ExistingData();
         public (List<ProductResponse>, PagedList<Product>) GeAllProducts(HttpRequest req,ProductPagingParameters productPagingParameters);
