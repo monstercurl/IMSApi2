@@ -30,7 +30,10 @@ namespace IMSApi.Controllers
         public IActionResult AddProductHeader(ProdcutRequest prdReq)
         {
             //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            return Ok(_prd.AddProductHeader(prdReq));
+            ProductIDResponse prr = new ProductIDResponse() { ProductId = _prd.AddProductHeader(prdReq) ,message = "Product Added"};
+            
+            
+            return Ok(prr);
             
 
         }
