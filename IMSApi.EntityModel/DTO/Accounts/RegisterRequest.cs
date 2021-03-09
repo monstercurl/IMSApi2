@@ -25,6 +25,13 @@ namespace IMSApi.EntityModel.DTO.Accounts
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
-        
+        [Required]
+        public int RoleId { get; set; }
+
+        [Required]
+        [Phone]
+        public string PhoneNumber { get; set; }
+
+
     }
 }

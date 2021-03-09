@@ -77,8 +77,9 @@ namespace IMSApi.DAL.Repo
                 IsVerified = false,
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
-                Role = _context.role.FirstOrDefault(x => x._role == UserRoles.endUser),
+                Role = _context.role.FirstOrDefault(x => x.Id == registerRequest.RoleId),
                 EmailVerificationToken = randomTokenString(),
+                Phone = registerRequest.PhoneNumber,
                 PasswordInHash = BC.HashPassword(registerRequest.Password),
                RegisteredOn = DateTime.UtcNow
 
@@ -133,6 +134,12 @@ namespace IMSApi.DAL.Repo
             rngCryptoServiceProvider.GetBytes(randomBytes);
             // convert random bytes to hex string
             return BitConverter.ToString(randomBytes).Replace("-", "");
+        }
+
+        List<Role> IAccountService.GetExistingRoles()
+        {
+            var o = _context.role;
+            return o.ToList();
         }
     }
 }

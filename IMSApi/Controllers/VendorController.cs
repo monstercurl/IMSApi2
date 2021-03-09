@@ -39,7 +39,7 @@ namespace IMSApi.Controllers
         public ActionResult Update(VendorModel vn,int id)
         {
             var res = _ven.Update(id,vn);
-            return Ok();
+            return Ok(res);
         }
        
         [HttpPost("Delete")]

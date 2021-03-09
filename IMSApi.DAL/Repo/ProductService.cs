@@ -159,7 +159,7 @@ namespace IMSApi.DAL.Repo
             Product product = null;
             using (_context)
             {
-
+                
                 product = _context.product.Where(e => e.Product_ID == ProductId).Include(e => e.productDesign)
                     .Include(e => e.product_images).First();
                 //foreach (ProductImages pri in product.Image_Urls)
@@ -208,18 +208,25 @@ namespace IMSApi.DAL.Repo
             //.Take(productPagingParameters.PageSize)
 
             //  .ToList();
-            var listOfProducts = PagedList<Product>.ToPagedList(_context.product, productPagingParameters.PageNumber, productPagingParameters.PageSize);
 
-
+            PagedList<Product> listOfProducts; ;
             using (_context)
             {
                  _context.product.Include(acc => acc.Category).ToList();
                 _context.product.Include(acc => acc.productDesign).ThenInclude(acc => acc.product_design_images).ThenInclude(acc => acc.ProductImage).ToList();
+                _context.product.Include(acc => acc.productDesign).ThenInclude(acc => acc.productColor).ToList();
+                _context.product.Include(acc => acc.productDesign).ThenInclude(acc => acc.productSize).ToList();
+
                 _context.product.Include(acc => acc.product_images).ToList();
-                _context.product.Include(acc => acc.product_images).ToList();
-                
+                _context.product.Include(acc => acc.StichingType).ToList();
+                _context.product.Include(acc => acc.Fabric).ToList();
+                _context.product.Include(acc => acc.Vendor).ToList();
+
+                listOfProducts = PagedList<Product>.ToPagedList(_context.product, productPagingParameters.PageNumber, productPagingParameters.PageSize);
+
 
             }
+
             List<ProductResponse> ListOfProductResponse = new List<ProductResponse>();
            foreach (Product prd in listOfProducts)
             {

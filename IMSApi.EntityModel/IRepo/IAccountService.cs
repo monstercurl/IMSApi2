@@ -15,5 +15,6 @@ namespace IMSApi.EntityModel.IRepo
        
         public string Register(RegisterRequest registerRequest,string origin);
         string VerifyEmail(string email,string token);
+        List<Role> GetExistingRoles();
     }
 }

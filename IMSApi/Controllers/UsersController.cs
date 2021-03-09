@@ -61,6 +61,15 @@ namespace IMSApi.Controllers
             return Ok(users);
         }
 
-        
+        [AllowAnonymous]
+        [HttpGet("GetRoles")]
+        public IActionResult GetRoles()
+        {
+            var users = _accountService.GetExistingRoles();
+            return Ok(users);
+        }
+
+
+
     }
 }

@@ -44,7 +44,15 @@ namespace IMSApi.EntityModel.DTO.ProductDTONs
             StichingType = prd.StichingType;
             Description = prd.Description;
             Cost_Price = prd.Cost_Price;
-            
+            AddTime = prd.AddTime;
+            CustomerMarginRupees = prd.CustomerMarginRupees;
+            CustomerShippingCost = prd.CustomerShippingCost;
+            TraderMarginRupees = prd.TraderMarginRupees;
+            VendorShippingCost = prd.VendorShippingCost;Cost_Price = prd.Cost_Price;
+            IsActive = prd.IsActive;
+            ProductImageDir = prd.ProductImageDir;
+            UpdateTime = prd.UpdateTime;
+
             Vendor = prd.Vendor;
             AddDate = prd.AddDate;
             UpdateDate = prd.UpdateDate;
