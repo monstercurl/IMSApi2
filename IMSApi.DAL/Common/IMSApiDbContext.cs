@@ -1,5 +1,6 @@
 ﻿using IMSApi.EntityModel.DTO.Accounts;
 using IMSApi.EntityModel.Entities;
+using IMSApi.EntityModel.Entities.CartAndWishList;
 using IMSApi.EntityModel.Entities.Product;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -60,7 +61,26 @@ namespace IMSApi.DAL
            .HasMany<Product>()
            .WithOne(a => a.StichingType).OnDelete(DeleteBehavior.SetNull);
 
-          
+            modelBuilder.Entity<Account>()
+       .HasOne<Cart>()
+       .WithOne(a => a.account).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Cart>()
+  .HasMany<CartItem>(b=>b.cartItems)
+  .WithOne().OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Account>()
+       .HasOne<WishList>()
+       .WithOne(a => a.account).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<WishList>()
+  .HasMany<WishListItem>(b=>b.WishListItems)
+  .WithOne().OnDelete(DeleteBehavior.Cascade);
+
+
+
+
 
             modelBuilder.Entity<ProductStichingType>().HasData(new ProductStichingType { id=1, stiching_value = "Stiched" });
             modelBuilder.Entity<ProductStichingType>().HasData(new ProductStichingType { id=2, stiching_value = "UnStiched" });
@@ -125,6 +145,10 @@ namespace IMSApi.DAL
         public DbSet<Product_Design_Images> product_design_images { get; set; }
         public DbSet<ProductImages> productimages  { get; set; }
         public DbSet<ProductTaxPercentage> prd_tax_percentage { get; set; }
+        public DbSet<Cart> cart { get; set; }
+        public DbSet<CartItem> cartItems { get; set; }
+        public DbSet<Cart> wishList { get; set; }
+        public DbSet<CartItem> wishListItems { get; set; }
 
 
     }
