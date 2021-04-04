@@ -1,9 +1,9 @@
-﻿using IMSApi.EntityModel.DTO.CartDTO;
+﻿using IMSApi.EntityModel.DTO;
 using IMSApi.EntityModel.IRepo;
-using IMSApi.EntityModel.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using IMSApi.EntityModel.DTO.CartDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,35 +13,34 @@ namespace IMSApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
-
-    public class CartController : ControllerBase
+    public class WishListController : ControllerBase
     {
         ICartService cartService;
-      
-        public CartController(ICartService cart)
+
+        public WishListController(ICartService cart)
         {
             cartService = cart;
         }
 
+
         [AllowAnonymous]
-        [HttpPost("AddToCart")]
-        public IActionResult AddToCart(CartDTO cartDto)
+        [HttpPost("AddToWishList")]
+        public IActionResult AddToWishList(WishListDTO wishlistDto)
         {
             //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            string prr = cartService.AddToCart(cartDto.userId, cartDto.productId);
+            string prr = cartService.AddToWishList(wishlistDto.userId, wishlistDto.productId);
 
 
-            return Ok(new MessaageCommonResponse() { message = prr }) ;
+            return Ok(new MessaageCommonResponse() { message = prr });
 
 
         }
         [AllowAnonymous]
-        [HttpPost("GetAllCartItems")]
-        public IActionResult GetAllCartItems(CartDTOUser cartDto)
+        [HttpPost("GetAllWishListItemsItems")]
+        public IActionResult GetAllCartItems(CartDTOUser WishListDTO)
         {
             //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            var prr = cartService.getAllCartItemsForThisUser(cartDto.userId);
+            var prr = cartService.getAllWishListItemsForThisUser(WishListDTO.userId);
 
 
             return Ok(prr);
@@ -49,15 +48,16 @@ namespace IMSApi.Controllers
 
         }
         [AllowAnonymous]
-        [HttpPost("DeleteCartItem")]
-        public IActionResult DeleteCartItem(CartItemDTO cartItemDto)
+        [HttpPost("DeleteWishListItem")]
+        public IActionResult DeleteCartItem(WishListItemDTO wishlistItemDTO)
         {
             //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            var prr = cartService.DeleteFromCart(cartItemDto.cartItemId,cartItemDto.userId);
+            var prr = cartService.DeleteFromWishList(wishlistItemDTO.cartItemId, wishlistItemDTO.userId);
             return Ok(new MessaageCommonResponse() { message = prr });
 
 
         }
+
 
     }
 }

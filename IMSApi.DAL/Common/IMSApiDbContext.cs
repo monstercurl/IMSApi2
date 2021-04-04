@@ -147,8 +147,8 @@ namespace IMSApi.DAL
         public DbSet<ProductTaxPercentage> prd_tax_percentage { get; set; }
         public DbSet<Cart> cart { get; set; }
         public DbSet<CartItem> cartItems { get; set; }
-        public DbSet<Cart> wishList { get; set; }
-        public DbSet<CartItem> wishListItems { get; set; }
+        public DbSet<WishList> wishList { get; set; }
+        public DbSet<WishListItem> wishListItems { get; set; }
 
 
     }

@@ -12,6 +12,14 @@ namespace IMSApi.EntityModel.IRepo
         public string AddToCart(int userId, long productId);
         public string DeleteFromCart(long CartItemId, int UserId);
         public ICollection<CartItem> getAllCartItemsForThisUser(int userId);
-       
+
+        //below are for WishListItems
+        public string AddToWishList(int userId, long productId);
+        public string DeleteFromWishList(long CartItemId, int UserId);
+        public ICollection<WishListItem> getAllWishListItemsForThisUser(int userId);
+
+
+
+
     }
 }
