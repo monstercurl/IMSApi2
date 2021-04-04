@@ -41,7 +41,7 @@ namespace IMSApi.Controllers
         public IActionResult GetAllCartItems(CartDTOUser cartDto)
         {
             //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            var prr = cartService.getAllCartItemsForThisUser(cartDto.userId);
+            var prr = cartService.getAllCartItemsForThisUser(Request,cartDto.userId);
 
 
             return Ok(prr);

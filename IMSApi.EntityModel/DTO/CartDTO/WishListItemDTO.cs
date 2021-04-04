@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IMSApi.EntityModel.DTO.ProductDTONs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,5 +16,10 @@ namespace IMSApi.EntityModel.DTO.CartDTO
     {
         public long cartItemId { get; set; }
         public int userId { get; set; }
+    }
+    public class WishListItmesResponse
+    {
+        public long cartItemId { get; set; }
+        public ProductResponse products { get; set; }
     }
 }

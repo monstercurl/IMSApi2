@@ -1,6 +1,9 @@
-﻿using IMSApi.EntityModel.Entities.CartAndWishList;
+﻿using IMSApi.EntityModel.DTO.CartDTO;
+using IMSApi.EntityModel.DTO.ProductDTONs;
+using IMSApi.EntityModel.Entities.CartAndWishList;
 using IMSApi.EntityModel.Entities.Product;
 using IMSApi.EntityModel.IRepo;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -158,7 +161,7 @@ namespace IMSApi.DAL.Repo
             return "deleted successfully";
         }
 
-        public ICollection<CartItem> getAllCartItemsForThisUser(int userId)
+        public List<CartItmesResponse> getAllCartItemsForThisUser(HttpRequest req , int userId)
         {
             Cart cartOfUser = null;
             using (_context)
@@ -175,11 +178,16 @@ namespace IMSApi.DAL.Repo
                 cartOfUser = _context.cart.Where(e => e.AccountId == userId).Include(e => e.cartItems).ThenInclude(e => e.product).FirstOrDefault();
 
             }
-            return cartOfUser.cartItems;
+            List<CartItmesResponse> cartItmesResponses = new List<CartItmesResponse>();
+            foreach (CartItem prd in cartOfUser.cartItems)
+            {
+                cartItmesResponses.Add(new CartItmesResponse() { cartItemId = prd.Id, products = new ProductResponse(prd.product, req) });
+            }
+            return cartItmesResponses;
 
         }
 
-        public ICollection<WishListItem> getAllWishListItemsForThisUser(int userId)
+        public List<WishListItmesResponse> getAllWishListItemsForThisUser(HttpRequest req,int userId)
         {
             WishList WishListOfUser = null;
             using (_context)
@@ -196,7 +204,12 @@ namespace IMSApi.DAL.Repo
                 WishListOfUser = _context.wishList.Where(e => e.AccountId == userId).Include(e => e.WishListItems).ThenInclude(e => e.product).FirstOrDefault();
 
             }
-            return WishListOfUser.WishListItems;
+            List<WishListItmesResponse> wishListItmesResponses = new List<WishListItmesResponse>();
+            foreach (WishListItem prd in WishListOfUser.WishListItems)
+            {
+                wishListItmesResponses.Add(new WishListItmesResponse() { cartItemId = prd.Id, products =  new ProductResponse(prd.product, req) });
+            }
+            return wishListItmesResponses;
         }
     }
     

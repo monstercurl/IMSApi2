@@ -40,7 +40,7 @@ namespace IMSApi.Controllers
         public IActionResult GetAllCartItems(CartDTOUser WishListDTO)
         {
             //List<ProdcutDesignDTO> prdList = JsonConvert.DeserializeObject<List<ProdcutDesignDTO>>(productDesignList);
-            var prr = cartService.getAllWishListItemsForThisUser(WishListDTO.userId);
+            var prr = cartService.getAllWishListItemsForThisUser(Request,WishListDTO.userId);
 
 
             return Ok(prr);
