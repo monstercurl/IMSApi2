@@ -66,7 +66,7 @@ namespace IMSApi.EntityModel.DTO.ProductDTONs
             foreach (ProductImages PrdDesign in prd.product_images)
             {
                 ProductImages PrdImg = PrdDesign;
-                Image_Urls.Add(new ProductImagesRespose() { id = PrdImg.id,url = String.Format("{0}://{1}{2}/images/{3}/{4}", req.Scheme,req.Host,req.PathBase,PrdImg.folderName,Path.GetFileName(PrdImg.Physicalurl)) });
+                Image_Urls.Add(new ProductImagesRespose() { id = PrdImg.id,url = String.Format("{0}://{1}{2}/images/{3}/{4}", req.Scheme,req.Host,req.PathBase,PrdImg.folderName+"/"+"watermark",Path.GetFileName(PrdImg.Physicalurl)) });
 
             }
             foreach (ProductDesign PrdDes in prd.productDesign)
@@ -76,7 +76,7 @@ namespace IMSApi.EntityModel.DTO.ProductDTONs
                 List<ProductImagesRespose> p = new List<ProductImagesRespose>();
                 if(PrdDes.product_design_images.Count() > 0) { 
                  p = (List<ProductImagesRespose>)(from pop in PrdDes.product_design_images
-                                                  select new ProductImagesRespose() { id = pop.ProductImagesId, url = String.Format("{0}://{1}{2}/images/{3}/{4}", req.Scheme, req.Host, req.PathBase, pop.ProductImage.folderName, Path.GetFileName(pop.ProductImage.Physicalurl)) }).ToList();
+                                                  select new ProductImagesRespose() { id = pop.ProductImagesId, url = String.Format("{0}://{1}{2}/images/{3}/{4}", req.Scheme, req.Host, req.PathBase, pop.ProductImage.folderName + "/" + "watermark", Path.GetFileName(pop.ProductImage.Physicalurl)) }).ToList();
 
                 }
                 prdDesignRes.Add(new ProductDesignResponse() { Id = PrdDes.Id,
