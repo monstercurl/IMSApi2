@@ -1,5 +1,6 @@
 ﻿using IMSApi.DAL;
 using IMSApi.DAL.Common;
+using IMSApi.EntityModel.DTO;
 using IMSApi.EntityModel.DTO.ProductDTONs;
 using IMSApi.EntityModel.Entities.Product;
 using IMSApi.EntityModel.IRepo;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 
@@ -41,8 +43,15 @@ namespace IMSApi.Controllers
         [HttpPost("AddProductDesignWithImages")]
         public IActionResult AddProductDesigns([FromForm] ProdcutDesignDTO prdDesgn)
         {
-            List<ProductSizeAndQuantityJson> qtlist = JsonConvert.DeserializeObject<List<ProductSizeAndQuantityJson>>(prdDesgn.ProductSizeAndQuantityJson);
-            return Ok(_prd.AddProductDesign(prdDesgn, _webHostEnvironment, qtlist));
+            try
+            {
+                List<ProductSizeAndQuantityJson> qtlist = JsonConvert.DeserializeObject<List<ProductSizeAndQuantityJson>>(prdDesgn.ProductSizeAndQuantityJson);
+                return Ok(_prd.AddProductDesign(prdDesgn, _webHostEnvironment, qtlist));
+            }
+            catch(Exception e) {
+                return Ok(new MessaageCommonResponse() { message=e.StackTrace +"                "+ e.Message});
+            }
+            
 
 
         }

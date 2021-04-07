@@ -27,7 +27,7 @@ namespace IMSApi.EntityModel.IRepo
         public string AddSize(ProductSizeDTO productSizeDTO);
         
         public List<ProductDesign> GetDesignsForGivenProduct(int Id);
-        public List<string> UploadImage(List<IFormFile> Img, IWebHostEnvironment web,string prdImage,int productId);
+        public List<string> UploadImage(List<IFormFile> Img, IWebHostEnvironment web,string prdImage,string watermark);
         public string UpdateProduct(ProdcutRequest prdReq);
         public CostCalculateResponse CostWithTax(CostCalculateRequest costCalculateRequest);
         public string ActivateProduct(int Id);

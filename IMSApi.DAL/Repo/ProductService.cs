@@ -65,7 +65,7 @@ namespace IMSApi.DAL.Repo
             prd.AddTime = DateTime.UtcNow.TimeOfDay;
             prd.UpdateTime = null;
             prd.UpdateDate = null;
-            string folderForProductRelatedImages = "prd_" + DateTime.Now.ToString("yyyyddMHHmmss");
+            string folderForProductRelatedImages = "prd_" + DateTime.Now.ToString("yyyMMddHHmmss");
             prd.ProductImageDir = folderForProductRelatedImages;
             prd.IsActive = false;
             prd.TraderMarginRupees = prdReq.TraderMarginRupees;
@@ -91,6 +91,7 @@ namespace IMSApi.DAL.Repo
 
             using (_context)
             {
+                String WaterMarkId = null;
                 Product product = new Product();
                 product = _context.product.Where(e => e.Product_ID == PrdDesign.ProductId).Include(e => e.productDesign).ThenInclude(e => e.product_design_images)
                          .Include(e => e.product_images).First();
@@ -100,13 +101,13 @@ namespace IMSApi.DAL.Repo
 
 
                 ICollection<ProductImages> productImages = new List<ProductImages>();
-                
-                foreach (string _imgUrl in UploadImage(PrdDesign.ImagesWithDesign, webHostEnv, product.ProductImageDir,_context.productimages.OrderByDescending(u => u.id).FirstOrDefault().id))
+
+                foreach (string _imgUrl in UploadImage(PrdDesign.ImagesWithDesign, webHostEnv, product.ProductImageDir, WaterMarkId))
                 {
                     ProductImages prdI = new ProductImages() { Physicalurl = _imgUrl, folderName = product.ProductImageDir };
                     productImages.Add(prdI);
-                   product.product_images.Add(prdI);
-                    
+                    product.product_images.Add(prdI);
+
 
                 }
 
@@ -124,7 +125,8 @@ namespace IMSApi.DAL.Repo
                     prdes.Quantity = psq.Qty;
                     
                      prdes.product_design_images =( from pop in productImages select new Product_Design_Images() { ProductImage = pop }).ToList();
-                    
+                   // prdes.product_design_images = (from pop in UploadImagegAndGetTheURLs(PrdDesign,webHostEnv,product, prdes.Id) select new Product_Design_Images() { ProductImage = pop }).ToList();
+
                     prddee.Add(prdes);
 
 
@@ -134,8 +136,14 @@ namespace IMSApi.DAL.Repo
 
 
                 product.productDesign = prddee;
-                
+
                 _context.SaveChanges();
+
+                foreach (ProductImages prdImg in productImages) {
+
+                    AddWaterMarkToTheImages(prdImg.Physicalurl, prdImg.id.ToString(), PrdDesign.ImagesWithDesign.First());
+                
+                }
                 // product.product_design_images = ImageUrlsDesigns;
 
             }
@@ -256,8 +264,9 @@ namespace IMSApi.DAL.Repo
             throw new NotImplementedException();
         }
 
-        public List<string> UploadImage(List<IFormFile> Img, IWebHostEnvironment webHostEnvironment,string prdUniqueFolderName, int MaxproductImagId)
+        public List<string> UploadImage(List<IFormFile> Img, IWebHostEnvironment webHostEnvironment,string prdUniqueFolderName, string MaxproductImagId)
         {
+
             string uniqueFileName ;
             string filePath ;
             List<string> ImageUrl = new List<string>();
@@ -277,46 +286,33 @@ namespace IMSApi.DAL.Repo
                 {
                     Directory.CreateDirectory(productSpecifiPath);
                 }
-                string productSpecifiPathWatermark = Path.Combine(productSpecifiPath, "watermark");
-                if (!Directory.Exists(productSpecifiPathWatermark))
-                {
-                    Directory.CreateDirectory(productSpecifiPathWatermark);
-                }
+                
 
                
                 foreach (IFormFile img in Img)
                 {
-                    MaxproductImagId = MaxproductImagId + 1;
-
+                    
+                    
                     uniqueFileName = Guid.NewGuid().ToString();
                     filePath = Path.Combine(productSpecifiPath, uniqueFileName+Path.GetExtension(img.FileName));
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        
-                        img.CopyTo(fileStream);
-
-                        var watermarkedStream = new MemoryStream();
-                        using (var imgWaterMark = Image.FromStream(fileStream))
+                    
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
                         {
-                            using (var graphic = Graphics.FromImage(imgWaterMark))
-                            {
-                                var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
-                                var color = Color.FromArgb(128, 128, 255, 255);
-                                var brush = new SolidBrush(color);
-                                var point = new Point(imgWaterMark.Width - 120, imgWaterMark.Height - 30);
 
-                                graphic.DrawString(MaxproductImagId.ToString(), font, brush, point);
-                                imgWaterMark.Save(watermarkedStream, ImageFormat.Png);
-                            }
-                            imgWaterMark.Save(productSpecifiPathWatermark+"/"+ uniqueFileName + Path.GetExtension(img.FileName));
+                            img.CopyTo(fileStream);
+                         ImageUrl.Add(filePath);
+
+
+
+                            
+                            
+
 
                         }
 
-                        //ImageUrl.Add(filePath);
-                        ImageUrl.Add(productSpecifiPathWatermark + "/" + uniqueFileName + Path.GetExtension(img.FileName));
 
-
-                    } 
+                    
+                    
                 }
             }
             return ImageUrl;
@@ -403,5 +399,48 @@ namespace IMSApi.DAL.Repo
             
             
         }
+
+        public void AddWaterMarkToTheImages(string filepath, string MaxproductImagId,IFormFile Img)
+        {
+            string folderName = Path.GetDirectoryName(filepath);
+
+            string productSpecifiPathWatermark = Path.Combine(folderName, "watermark");
+            if (!Directory.Exists(productSpecifiPathWatermark))
+            {
+                Directory.CreateDirectory(productSpecifiPathWatermark);
+            }
+            using (var fileStream = new FileStream(filepath, FileMode.Open))
+            {
+                
+                var watermarkedStream = new MemoryStream();
+                using (var imgWaterMark = Image.FromStream(fileStream))
+                {
+                    using (var graphic = Graphics.FromImage(imgWaterMark))
+                    {
+                        var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
+                        var color = Color.FromArgb(128, 128, 255, 255);
+                        var brush = new SolidBrush(color);
+                        var point = new Point(imgWaterMark.Width - 120, imgWaterMark.Height - 120);
+
+                        graphic.DrawString(MaxproductImagId.ToString(), font, brush, point);
+                        imgWaterMark.Save(watermarkedStream, ImageFormat.Png);
+                    }
+                    imgWaterMark.Save(productSpecifiPathWatermark + "/" + Path.GetFileName(filepath) );
+
+                }
+
+
+
+
+
+
+
+            }
+           
+
+
+        }
+
+
     }
 }
