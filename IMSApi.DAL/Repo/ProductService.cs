@@ -417,10 +417,10 @@ namespace IMSApi.DAL.Repo
                 {
                     using (var graphic = Graphics.FromImage(imgWaterMark))
                     {
-                        var font = new Font(FontFamily.GenericSansSerif, 40, FontStyle.Bold, GraphicsUnit.Pixel);
-                        var color = Color.FromArgb(128, 128, 255, 255);
+                        var font = new Font(FontFamily.GenericSansSerif, 90, FontStyle.Bold, GraphicsUnit.Pixel);
+                        var color = Color.FromArgb(128, 143, 100, 4);
                         var brush = new SolidBrush(color);
-                        var point = new Point(imgWaterMark.Width - 120, imgWaterMark.Height - 120);
+                        var point = new Point(90, 1000);
 
                         graphic.DrawString(MaxproductImagId.ToString(), font, brush, point);
                         imgWaterMark.Save(watermarkedStream, ImageFormat.Png);
